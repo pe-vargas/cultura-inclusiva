@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <style>
+        @font-face {
+            font-family: 'OpenDyslexic';
+            src: url('https://ant-media.net/opendyslexic-webfont/opendyslexic-regular-webfont.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3875/3875391.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultura Inclusiva</title>
+    <style>
+        /* ---------------------------------------------------------------------- */
+        /* --- ESTILOS PADRÕES (Light Mode Default) --- */
+        /* ---------------------------------------------------------------------- */
+        :root {
+            --primary-color: #003366; /* Azul Escuro */
+            --secondary-color: #00509e; /* Azul Médio */
+            --text-color: #1a1a1a;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --accent-color: #d32f2f; /* Vermelho/Destaque */
+            --price-color: #2e7d32; /* Verde/Preço */
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* [ESTILOS DE LAYOUT] */
+        .app-container {
+            width: 100%;
+            max-width: 412px;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            padding-bottom: 70px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 1.4rem; text-align: center; }
+        p.subtitle { margin: 5px 0 0; text-align: center; font-size: 0.9rem; opacity: 0.9; }
+
+        .filter-section {
+            padding: 15px;
+            background: var(--card-bg);
+            margin: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        label { font-weight: bold; display: block; margin-bottom: 8px; font-size: 0.9rem; }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+        
+        .events-list {
+            list-style: none;
+            padding: 0 10px;
+            margin-top: 10px;
+        }
+
+        .event-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 0; 
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 15px;
+        }
+
+        .title-and-save {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .event-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .event-location {
+            font-size: 0.9rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .accessibility-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border: 1px solid #bbdefb;
+        }
+        
+        .save-button {
+            background: none;
+            border: none;
+            color: #ff9800;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: color 0.2s;
+            white-space: nowrap;
+        }
+
+        .save-button:hover {
+            color: var(--accent-color);
+        }
+
+        .btn-details {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--card-bg);
+            color: var(--secondary-color);
+            border: none;
+            border-top: 1px solid #eee;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-details:hover { background-color: #f9f9f9; }
+        .btn-details:focus { outline: 2px solid orange; }
+
+        .details-content {
+            display: none; 
+            padding: 15px;
+            background-color: #fafafa;
+            border-top: 1px solid #eee;
+            animation: fadeIn 0.5s;
+        }
+
+        .event-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover; 
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background-color: #ddd; 
+        }
+
+        .price-tag {
+            color: var(--price-color);
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .full-description {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #333;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 412px;
+            height: 60px;
+            background-color: var(--card-bg); 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0;
+            z-index: 100; 
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #757575; 
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 5px 0;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--secondary-color); 
+            font-weight: bold;
+        }
+
+        .nav-item .icon {
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+        }
+
+        /* --- SEÇÃO DE CONFIGURAÇÕES DE ACESSIBILIDADE (MODAL) --- */
+        .accessibility-settings {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .settings-content {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 350px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            color: var(--text-color);
+        }
+
+        .settings-content h2 {
+            margin-top: 0;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .setting-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .setting-option:last-child {
+            border-bottom: none;
+        }
+
+        /* Estilo do toggle switch (chave de alternância) */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 25px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 25px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 17px;
+            width: 17px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--secondary-color);
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px var(--secondary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        /* ---------------------------------------------------------------------- */
+        /* --- ESTILOS DE ACESSIBILIDADE VISUAL --- */
+        /* ---------------------------------------------------------------------- */
+
+        /* 1. DISLEXIA: Aplica-se a todo o corpo do documento */
+        body.dyslexia-mode {
+            /* Força a fonte para todo o corpo */
+            font-family: 'OpenDyslexic', Arial, Helvetica, sans-serif !important; 
+            font-size: 1.1rem !important; /* Aumenta um pouco o tamanho */
+            line-height: 1.8 !important; /* Maior espaçamento entre linhas */
+            letter-spacing: 0.05em !important; /* Maior espaçamento entre letras */
+            word-spacing: 0.1em !important; /* Maior espaçamento entre palavras */
+        }
+        
+        /* Garante que o espaçamento seja aplicado até mesmo em elementos de lista */
+        body.dyslexia-mode .events-list,
+        body.dyslexia-mode .full-description {
+             line-height: 1.8 !important; 
+             letter-spacing: 0.05em !important; 
+        }
+        
+        /* 2. DALTONISMO: Esquemas de Cores Otimizados (Alto Contraste) */
+        
+        /* Protanopia (Vermelho fraco/ausente) */
+        body.protanopia-mode:not(.dark-mode) {
+            --primary-color: #004D40; /* Verde Azulado Escuro */
+            --secondary-color: #4CAF50; /* Verde Brilhante */
+            --accent-color: #FFB300; /* Âmbar (substitui o vermelho) */
+            --price-color: #795548; /* Marrom (substitui o verde) */
+            --text-color: #1a1a1a;
+            --bg-color: #f0f2f5;
+        }
+
+        /* Deuteranopia (Verde fraco/ausente) */
+        body.deuteranopia-mode:not(.dark-mode) {
+            --primary-color: #311B92; /* Roxo Escuro */
+            --secondary-color: #90CAF9; /* Azul Claro Brilhante */
+            --accent-color: #FF8F00; /* Laranja Escuro (Alto Contraste) */
+            --price-color: #4527A0; /* Violeta Escuro */
+            --text-color: #1a1a1a;
+            --bg-color: #f0f2f5;
+        }
+        
+        /* Tritanopia (Azul fraco/ausente) */
+        body.tritanopia-mode:not(.dark-mode) {
+            --primary-color: #8D6E63; /* Marrom Pálido */
+            --secondary-color: #8BC34A; /* Verde Claro */
+            --accent-color: #D50000; /* Vermelho Puro (Contraste Máximo) */
+            --price-color: #FFEB3B; /* Amarelo Brilhante */
+            --text-color: #1a1a1a;
+            --bg-color: #f0f2f5;
+        }
+
+        /* 3. TEMA ESCURO (Dark Mode) */
+
+        body.dark-mode {
+            --text-color: #e0e0e0;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --primary-color: #001f3f;
+            --secondary-color: #bbdefb;
+        }
+        
+        /* Cores de Alto Contraste no Dark Mode */
+        
+        body.protanopia-mode.dark-mode {
+            --primary-color: #263238; /* Cinza Chumbo */
+            --secondary-color: #AED581; /* Verde Pastel (Alto Contraste) */
+            --accent-color: #FFEB3B; /* Amarelo (Alto Contraste) */
+            --price-color: #A1887F; /* Marrom Claro */
+        }
+        
+        body.deuteranopia-mode.dark-mode {
+            --primary-color: #1A237E; /* Azul Índigo Escuro */
+            --secondary-color: #FFD54F; /* Âmbar Claro */
+            --accent-color: #E91E63; /* Rosa Choque */
+            --price-color: #D1C4E9; /* Lavanda Claro */
+        }
+
+        body.tritanopia-mode.dark-mode {
+            --primary-color: #3E2723; /* Marrom Escuro */
+            --secondary-color: #B2FF59; /* Verde Limão (Alto Contraste) */
+            --accent-color: #F44336; /* Vermelho Claro */
+            --price-color: #FFD600; /* Amarelo Forte */
+        }
+
+        /* Aplica as variáveis do dark mode */
+        body.dark-mode .app-container { background-color: var(--bg-color); box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); }
+        body.dark-mode header { background-color: var(--primary-color); box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1); }
+        body.dark-mode .filter-section, body.dark-mode .event-card { background-color: var(--card-bg); box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
+        body.dark-mode .event-title { color: var(--secondary-color); }
+        body.dark-mode .event-location, body.dark-mode .full-description, body.dark-mode label { color: var(--text-color); }
+        body.dark-mode select { border-color: var(--secondary-color); background-color: #2c2c2c; color: var(--text-color); }
+        body.dark-mode .btn-details { background-color: var(--card-bg); color: var(--secondary-color); border-top: 1px solid #333; }
+        body.dark-mode .details-content { background-color: #2c2c2c; border-top: 1px solid #333; }
+        body.dark-mode .tag { background-color: var(--primary-color); color: var(--text-color); border: 1px solid var(--secondary-color); }
+        body.dark-mode .nav-bar { background-color: var(--card-bg); box-shadow: 0 -2px 10px rgba(0,0,0,0.5); }
+        body.dark-mode .nav-item { color: #a0a0a0; }
+        body.dark-mode .nav-item.active { color: var(--secondary-color); }
+        body.dark-mode .save-button { color: var(--accent-color); }
+
+    </style>
+</head>
+<body class="dark-mode">
+
+    <div class="app-container">
+        <header>
+            <h1>Cultura Inclusiva</h1>
+            <p class="subtitle">A arte acessível a todos</p>
+        </header>
+
+        <main>
+            <section class="filter-section">
+                <label for="access-filter">Busque por recurso de acessibilidade:</label>
+                <select id="access-filter" onchange="filterEvents()">
+                    <option value="todos">Ver Todos os Eventos</option>
+                    <option value="libras">Intérprete de Libras</option>
+                    <option value="audio">Audiodescrição</option>
+                    <option value="motor">Acessibilidade Motora</option>
+                    <option value="autismo">Sessão Azul (TEA)</option>
+                </select>
+            </section>
+
+            <ul id="events-container" class="events-list">
+                </ul>
+        </main>
+    </div>
+
+    <div id="accessibility-modal" class="accessibility-settings">
+        <div class="settings-content">
+            <h2>Configurações Visuais</h2>
+
+            <div class="setting-option">
+                <span>Modo Escuro (Padrão)</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <hr style="border-top: 1px solid #ccc; margin: 10px 0;">
+            <p style="font-weight: bold; margin-bottom: 5px;">Cores para Daltonismo:</p>
+
+            <div class="setting-option">
+                <span>Cores Padrão (Desativar Cores Otimizadas)</span>
+                <label class="toggle-switch">
+                    <input type="radio" name="daltonism-mode" id="none-mode-toggle" onchange="setDaltonismMode('none')" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="setting-option">
+                <span>Cores Otimizadas (Protanopia)</span>
+                <label class="toggle-switch">
+                    <input type="radio" name="daltonism-mode" id="protanopia-mode-toggle" onchange="setDaltonismMode('protanopia')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-option">
+                <span>Cores Otimizadas (Deuteranopia)</span>
+                <label class="toggle-switch">
+                    <input type="radio" name="daltonism-mode" id="deuteranopia-mode-toggle" onchange="setDaltonismMode('deuteranopia')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-option">
+                <span>Cores Otimizadas (Tritanopia)</span>
+                <label class="toggle-switch">
+                    <input type="radio" name="daltonism-mode" id="tritanopia-mode-toggle" onchange="setDaltonismMode('tritanopia')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <hr style="border-top: 1px solid #ccc; margin: 10px 0;">
+            
+            <div class="setting-option">
+                <span>Facilidade de Leitura (Dislexia)</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="dyslexia-mode-toggle" onchange="toggleDyslexiaMode()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <button onclick="closeAccessibilityModal()" style="margin-top: 20px; width: 100%; padding: 10px; background-color: var(--accent-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                Fechar
+            </button>
+        </div>
+    </div>
+    <nav class="nav-bar">
+        <a href="#" class="nav-item active">
+            <span class="icon">🏠</span>
+            <span class="label">Eventos</span>
+        </a>
+        <a href="mapa.html" class="nav-item">
+            <span class="icon">🗺️</span>
+            <span class="label">Mapa</span>
+        </a>
+        <a href="#" class="nav-item" onclick="openAccessibilityModal(); return false;">
+            <span class="icon">⚙️</span>
+            <span class="label">Acessibilidade</span>
+        </a>
+    </nav>
+    <script>
+        // Definição dos textos estáticos em Português
+        const staticTexts = {
+            btn_details_view: "Ver Detalhes e Preços ▼",
+            btn_details_hide: "Ocultar Detalhes ▲",
+            no_events: "Nenhum evento encontrado com este filtro.",
+            tag_motor: "♿ FÍSICA",
+            tag_libras: "👋 LIBRAS",
+            tag_audio: "🎧 ÁUDIO",
+            tag_autismo: "🧩 TEA",
+            btn_save: "☆ Salvar",
+            btn_saved: "★ Salvo",
+        };
+        
+        // Chaves de armazenamento local
+        const SAVED_EVENTS_KEY = 'savedEvents';
+        const DARK_MODE_KEY = 'darkModeEnabled';
+        const DYSLEXIA_MODE_KEY = 'dyslexiaModeEnabled';
+        const DALTONISM_MODE_KEY = 'daltonismMode'; // Armazena a string do tipo: 'protanopia', 'deuteranopia', 'tritanopia' ou 'none'
+
+
+        // --- FUNÇÕES DE ARMAZENAMENTO E ACESSIBILIDADE VISUAL ---
+        
+        const daltonismClasses = ['protanopia-mode', 'deuteranopia-mode', 'tritanopia-mode'];
+
+        /** Aplica/Remove a classe de daltonismo do body */
+        function setDaltonismMode(mode) {
+            const body = document.body;
+            
+            // 1. Remove todas as classes de daltonismo existentes
+            daltonismClasses.forEach(className => body.classList.remove(className));
+            
+            // 2. Aplica a nova classe se o modo não for 'none'
+            if (mode && mode !== 'none') {
+                body.classList.add(`${mode}-mode`);
+                localStorage.setItem(DALTONISM_MODE_KEY, mode);
+            } else {
+                // Se for 'none', garante o estado padrão e remove classes
+                localStorage.setItem(DALTONISM_MODE_KEY, 'none');
+            }
+            
+            // Re-renderizar eventos para garantir que a cor do texto de "Nenhum evento" seja atualizada
+            renderEvents(document.getElementById('access-filter').value);
+        }
+        
+        /** Alterna o modo escuro/alto contraste (DESATIVA quando desmarcado) */
+        function toggleDarkMode() {
+            const isEnabled = document.getElementById('dark-mode-toggle').checked;
+            document.body.classList.toggle('dark-mode', isEnabled);
+            localStorage.setItem(DARK_MODE_KEY, isEnabled ? 'true' : 'false');
+            // Re-renderizar eventos
+            renderEvents(document.getElementById('access-filter').value);
+        }
+
+        /** Alterna o modo de fonte para dislexia (DESATIVA quando desmarcado) */
+        function toggleDyslexiaMode() {
+            const isEnabled = document.getElementById('dyslexia-mode-toggle').checked;
+            document.body.classList.toggle('dyslexia-mode', isEnabled);
+            localStorage.setItem(DYSLEXIA_MODE_KEY, isEnabled ? 'true' : 'false');
+        }
+
+        /** Abre a janela modal de configurações */
+        function openAccessibilityModal() {
+            // Sincroniza o estado dos checkboxes com o estado atual do body
+            const currentDaltonism = localStorage.getItem(DALTONISM_MODE_KEY) || 'none';
+            
+            // Sincroniza Dark Mode (checkbox)
+            document.getElementById('dark-mode-toggle').checked = document.body.classList.contains('dark-mode');
+            // Sincroniza Dislexia (checkbox)
+            document.getElementById('dyslexia-mode-toggle').checked = document.body.classList.contains('dyslexia-mode');
+            
+            // Sincroniza os botões de rádio de Daltonismo
+            document.querySelectorAll('input[name="daltonism-mode"]').forEach(radio => {
+                const radioMode = radio.id.replace('-mode-toggle', '');
+                radio.checked = radioMode === currentDaltonism;
+            });
+            
+            document.getElementById('accessibility-modal').style.display = 'flex';
+        }
+
+        /** Fecha a janela modal de configurações */
+        function closeAccessibilityModal() {
+            document.getElementById('accessibility-modal').style.display = 'none';
+        }
+
+        /** Aplica o estado persistente das configurações ao carregar a página */
+        function applySavedAccessibilitySettings() {
+            const darkModeEnabled = localStorage.getItem(DARK_MODE_KEY) === 'true';
+            const dyslexiaModeEnabled = localStorage.getItem(DYSLEXIA_MODE_KEY) === 'true';
+            const daltonismMode = localStorage.getItem(DALTONISM_MODE_KEY) || 'none';
+
+            document.body.classList.toggle('dark-mode', darkModeEnabled);
+            document.body.classList.toggle('dyslexia-mode', dyslexiaModeEnabled);
+            setDaltonismMode(daltonismMode);
+        }
+
+        // --- FUNÇÕES DE EVENTOS (RENDERIZAÇÃO) ---
+
+        function getSavedEvents() {
+            try {
+                const saved = localStorage.getItem(SAVED_EVENTS_KEY);
+                return saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                console.error("Erro ao ler localStorage", e);
+                return [];
+            }
+        }
+
+        function isEventSaved(id) {
+            return getSavedEvents().includes(id);
+        }
+
+        function toggleSavedEvent(id) {
+            let savedEvents = getSavedEvents();
+            const idIndex = savedEvents.indexOf(id);
+            const saveButton = document.getElementById(`save-star-${id}`);
+            const dict = staticTexts;
+
+            if (idIndex > -1) {
+                savedEvents.splice(idIndex, 1);
+                if (saveButton) {
+                    saveButton.innerHTML = dict.btn_save;
+                }
+                alert("Evento removido dos Salvos!");
+            } else {
+                savedEvents.push(id);
+                if (saveButton) {
+                    saveButton.innerHTML = dict.btn_saved;
+                }
+                alert("Evento adicionado aos Salvos!");
+            }
+
+            try {
+                localStorage.setItem(SAVED_EVENTS_KEY, JSON.stringify(savedEvents));
+            } catch (e) {
+                console.error("Erro ao escrever no localStorage", e);
+            }
+        }
+
+        const events = [
+            {
+                id: 1,
+                title: "O Som do Silêncio",
+                location: "Teatro Municipal - Centro",
+                price: "R$ 40,00 (Inteira) | R$ 20,00 (Meia)",
+                image: "https://media.istockphoto.com/id/1295114854/pt/foto/empty-red-armchairs-of-a-theater-ready-for-a-show.jpg?s=612x612&w=0&k=20&c=p6Q-qaoaCCWx7K5RlQD8KdbMSDolqr1JqAneiso0J9Q=", 
+                tags: ["libras", "motor"],
+                fullDesc: "Uma peça envolvente sobre a comunicação humana. Conta com <strong>dois intérpretes de Libras</strong> posicionados no palco e sistema de áudio aprimorado. O teatro possui rampas de acesso, elevadores e banheiro adaptado."
+            },
+            {
+                id: 2,
+                title: "Exposição: Tocar a Arte",
+                location: "Museu de Arte Moderna",
+                price: "Entrada Gratuita (Terças) | R$ 15,00",
+                image: "https://www.paranaoeste.com.br/arquivos/noticias/28880/exposicao-toque-de-arte-celebra-talento-de-artistas-locais-no-mac.jpeg", 
+                tags: ["audio", "motor", "libras"],
+                fullDesc: "Exposição desenhada para deficientes visuais. Todas as obras possuem réplicas táteis e <strong>fones com audiodescrição</strong> detalhada. Guias treinados em Libras disponíveis mediante agendamento."
+            },
+            {
+                id: 3,
+                title: "Cinema: Divertida Mente 2",
+                location: "Cine Plaza - Sala 3",
+                price: "R$ 25,00 (Valor Único)",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWyR1Qo3uKWg8wglW2EZDu1Q734yuI509n9g&s", 
+                tags: ["autismo", "motor"],
+                fullDesc: "Sessão especial para pessoas com Transtorno do Espectro Autista (TEA). <strong>Som mais baixo, luzes parcialmente acesas</strong> e liberdade para circulação na sala. Não há trailers comerciais."
+            }
+        ];
+
+        const container = document.getElementById('events-container');
+
+        window.toggleSavedEvent = toggleSavedEvent;
+        window.toggleDetails = toggleDetails;
+        window.filterEvents = filterEvents;
+        window.openAccessibilityModal = openAccessibilityModal;
+        window.closeAccessibilityModal = closeAccessibilityModal;
+        window.toggleDarkMode = toggleDarkMode;
+        window.toggleDyslexiaMode = toggleDyslexiaMode;
+        window.setDaltonismMode = setDaltonismMode;
+
+        function toggleDetails(id) {
+            const detailsDiv = document.getElementById(`details-${id}`);
+            const btn = document.getElementById(`btn-${id}`);
+            const dict = staticTexts;
+
+            if (detailsDiv.style.display === "block") {
+                detailsDiv.style.display = "none";
+                btn.innerText = dict.btn_details_view;
+            } else {
+                document.querySelectorAll('.details-content').forEach(div => div.style.display = 'none');
+                document.querySelectorAll('.btn-details').forEach(button => button.innerText = dict.btn_details_view);
+
+                detailsDiv.style.display = "block";
+                btn.innerText = dict.btn_details_hide;
+                
+                detailsDiv.closest('.event-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function renderEvents(filter = "todos") {
+            container.innerHTML = "";
+            const dict = staticTexts;
+
+            const filteredEvents = events.filter(event => {
+                if (filter === "todos") return true;
+                return event.tags.includes(filter);
+            });
+
+            if (filteredEvents.length === 0) {
+                container.innerHTML = `<li style='text-align:center; padding:20px; color: ${document.body.classList.contains('dark-mode') ? '#b0b0b0' : '#333'};'>${dict.no_events}</li>`;
+                return;
+            }
+
+            filteredEvents.forEach(event => {
+                const li = document.createElement('li');
+                li.className = 'event-card';
+                
+                let initialDetailsDisplay = 'none';
+                let initialBtnText = dict.btn_details_view;
+                if (document.getElementById(`details-${event.id}`) && document.getElementById(`details-${event.id}`).style.display === "block") {
+                    initialDetailsDisplay = 'block';
+                    initialBtnText = dict.btn_details_hide;
+                }
+                
+                const isSaved = isEventSaved(event.id);
+                const saveButtonText = isSaved ? `${dict.btn_saved}` : `${dict.btn_save}`;
+
+                const tagsHtml = event.tags.map(tag => {
+                    let label = dict[`tag_${tag}`] || tag.toUpperCase();
+                    return `<span class="tag">${label}</span>`;
+                }).join('');
+
+                li.innerHTML = `
+                    <div class="card-header">
+                        <div class="title-and-save">
+                            <div class="event-title">${event.title}</div>
+                            <button id="save-star-${event.id}" class="save-button" onclick="toggleSavedEvent(${event.id})">
+                                ${saveButtonText}
+                            </button>
+                        </div>
+                        <div class="event-location">📍 ${event.location}</div>
+                        <div class="accessibility-tags">${tagsHtml}</div>
+                    </div>
+                    
+                    <button id="btn-${event.id}" class="btn-details" onclick="toggleDetails(${event.id})">
+                        ${initialBtnText}
+                    </button>
+
+                    <div id="details-${event.id}" class="details-content" style="display: ${initialDetailsDisplay};">
+                        <img src="${event.image}" alt="Imagem ilustrativa de ${event.title}" class="event-image">
+                        <span class="price-tag">💰 ${event.price}</span>
+                        <p class="full-description">${event.fullDesc}</p>
+                    </div>
+                `;
+                container.appendChild(li);
+            });
+
+            if (window.location.hash) {
+                const eventIdMatch = window.location.hash.match(/event-(\d+)/);
+                if (eventIdMatch) {
+                    const eventId = eventIdMatch[1];
+                    setTimeout(() => toggleDetails(parseInt(eventId)), 100);
+                    history.replaceState(null, null, ' ');
+                }
+            }
+        }
+
+        function filterEvents() {
+            const filterValue = document.getElementById('access-filter').value;
+            renderEvents(filterValue);
+        }
+
+        // Inicializa
+        applySavedAccessibilitySettings(); 
+        renderEvents();
+    </script>
+</body>
+</html>

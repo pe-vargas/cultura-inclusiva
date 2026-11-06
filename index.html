@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - Login e Cadastro Dark Mode</title>
+    <!-- Carrega o Tailwind CSS para estilização moderna e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Configuração do Tailwind CSS para usar a fonte Inter e cores do tema escuro
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Cores baseadas no seu tema:
+                        'dark-bg': '#1F2937', // Fundo principal escuro (gray-800)
+                        'dark-card': '#111827', // Cor mais escura para o card (gray-900)
+                        'accent-gold': '#FBBF24', // Amarelo/Dourado para destaque (Botão principal)
+                        'accent-pink': '#EC4899', // Rosa/Magenta para a aba de Cadastro
+                        'text-light': '#F3F4F6', // Texto claro
+                        'text-muted': '#9CA3AF', // Texto secundário (cinza claro)
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Estilos personalizados para a transição suave das abas */
+        .tab-content {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .hidden-tab {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transform: translateY(10px);
+            padding: 0;
+        }
+        .visible-tab {
+            opacity: 1;
+            max-height: 1000px; /* Valor grande para permitir que o conteúdo se expanda */
+            transform: translateY(0);
+            padding-top: 1rem; /* Padding do topo para separar das abas */
+            padding-bottom: 1rem;
+        }
+        /* Estilo de foco para Inputs no tema escuro, usando a cor de destaque Dourada */
+        input {
+            background-color: #1F2937; /* bg-gray-800 */
+            color: #F3F4F6; /* text-light */
+            border: 1px solid #374151; /* gray-700 */
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.4); /* Sombra suave do Dourado */
+            border-color: #FBBF24; /* Borda Dourada */
+        }
+    </style>
+</head>
+<!-- Corpo da página com fundo escuro -->
+<body class="bg-dark-bg min-h-screen flex items-center justify-center p-4 font-sans">
+
+    <!-- Container Principal do Formulário (Card) -->
+    <div class="w-full max-w-md bg-dark-card shadow-2xl rounded-xl p-8 transition duration-500 shadow-gray-900/50">
+
+        <h1 class="text-3xl font-extrabold text-text-light text-center mb-6">Acesse sua Conta</h1>
+
+        <!-- Controles das Abas (Login / Cadastro) -->
+        <div class="flex border-b border-gray-700 mb-6">
+            <!-- Aba de Login (Padrão Ativa) -->
+            <button id="tab-login"
+                    class="tab-button flex-1 py-3 text-lg font-medium rounded-t-lg transition duration-300 ease-in-out border-b-2 border-accent-gold text-accent-gold hover:bg-gray-800"
+                    data-target="login">
+                Fazer Login
+            </button>
+            <!-- Aba de Cadastro (Cor Pink/Magenta) -->
+            <button id="tab-register"
+                    class="tab-button flex-1 py-3 text-lg font-medium rounded-t-lg text-text-muted hover:text-text-light transition duration-300 ease-in-out hover:bg-gray-800 border-b-2 border-transparent"
+                    data-target="register">
+                Criar Conta
+            </button>
+        </div>
+
+        <!-- CONTEÚDO DA ABA DE LOGIN -->
+        <div id="content-login" class="tab-content visible-tab">
+            <form onsubmit="handleLogin(event)">
+                <!-- Campo Email -->
+                <div class="mb-4">
+                    <label for="login-email" class="block text-sm font-medium text-text-light mb-1">E-mail</label>
+                    <input type="email" id="login-email" name="email" required
+                           class="w-full px-4 py-2 border rounded-lg transition duration-150"
+                           placeholder="seu.email@exemplo.com">
+                </div>
+                <!-- Campo Senha -->
+                <div class="mb-6">
+                    <label for="login-password" class="block text-sm font-medium text-text-light mb-1">Senha</label>
+                    <input type="password" id="login-password" name="password" required
+                           class="w-full px-4 py-2 border rounded-lg transition duration-150"
+                           placeholder="********">
+                </div>
+
+                <!-- Botão de Login (Dourado - Cor Principal) -->
+                <button type="submit"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-sm font-bold text-gray-900 bg-accent-gold hover:bg-amber-500 focus:outline-none focus:ring-4 focus:ring-accent-gold/50 transition duration-200 ease-in-out transform hover:scale-[1.01]">
+                    Entrar na Conta
+                </button>
+
+                <!-- Link de Esqueceu a Senha (Texto Secundário) -->
+                <p class="mt-4 text-center text-sm">
+                    <a href="#" class="font-medium text-text-muted hover:text-accent-gold transition duration-150">Esqueceu sua senha?</a>
+                </p>
+            </form>
+        </div>
+
+        <!-- CONTEÚDO DA ABA DE CADASTRO -->
+        <div id="content-register" class="tab-content hidden-tab">
+            <form onsubmit="handleRegister(event)">
+                <!-- Campo Nome -->
+                <div class="mb-4">
+                    <label for="register-name" class="block text-sm font-medium text-text-light mb-1">Nome Completo</label>
+                    <input type="text" id="register-name" name="name" required
+                           class="w-full px-4 py-2 border rounded-lg transition duration-150"
+                           placeholder="Seu Nome">
+                </div>
+                <!-- Campo Email -->
+                <div class="mb-4">
+                    <label for="register-email" class="block text-sm font-medium text-text-light mb-1">E-mail</label>
+                    <input type="email" id="register-email" name="email" required
+                           class="w-full px-4 py-2 border rounded-lg transition duration-150"
+                           placeholder="seu.email@exemplo.com">
+                </div>
+                <!-- Campo Senha -->
+                <div class="mb-4">
+                    <label for="register-password" class="block text-sm font-medium text-text-light mb-1">Senha</label>
+                    <input type="password" id="register-password" name="password" required
+                           class="w-full px-4 py-2 border rounded-lg transition duration-150"
+                           placeholder="Mínimo 6 caracteres">
+                </div>
+                <!-- Campo Confirmação de Senha -->
+                <div class="mb-6">
+                    <label for="register-confirm-password" class="block text-sm font-medium text-text-light mb-1">Confirmar Senha</label>
+                    <input type="password" id="register-confirm-password" name="confirm-password" required
+                           class="w-full px-4 py-2 border rounded-lg transition duration-150"
+                           placeholder="Repita sua senha">
+                </div>
+
+                <!-- Botão de Cadastro (Pink/Magenta - Cor Secundária de Destaque) -->
+                <button type="submit"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-lg text-sm font-bold text-white bg-accent-pink hover:bg-pink-600 focus:outline-none focus:ring-4 focus:ring-accent-pink/50 transition duration-200 ease-in-out transform hover:scale-[1.01]">
+                    Criar Minha Conta
+                </button>
+            </form>
+        </div>
+
+        <!-- Mensagem de Status (sucesso/erro) -->
+        <div id="status-message" class="mt-6 p-3 rounded-lg text-center hidden" role="alert"></div>
+    </div>
+
+    <!-- Script JavaScript para Funcionalidade das Abas e Simulação de Ação -->
+    <script>
+        const loginTab = document.getElementById('tab-login');
+        const registerTab = document.getElementById('tab-register');
+        const loginContent = document.getElementById('content-login');
+        const registerContent = document.getElementById('content-register');
+        const statusMessage = document.getElementById('status-message');
+
+        // Função para alternar as abas
+        function switchTab(target) {
+            // Define as cores de destaque
+            const activeColor = target === 'login' ? 'border-accent-gold' : 'border-accent-pink';
+            const activeTextColor = target === 'login' ? 'text-accent-gold' : 'text-accent-pink';
+
+            // Remove o estilo ativo de todos os botões de aba
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('border-accent-gold', 'text-accent-gold', 'border-accent-pink', 'text-accent-pink');
+                btn.classList.add('border-transparent', 'text-text-muted', 'hover:text-text-light');
+            });
+
+            // Oculta todos os conteúdos
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('visible-tab');
+                content.classList.add('hidden-tab');
+            });
+
+            // Ativa a aba e o conteúdo correspondente
+            const activeTabButton = document.querySelector(`.tab-button[data-target="${target}"]`);
+            const activeContent = document.getElementById(`content-${target}`);
+
+            if (activeTabButton && activeContent) {
+                activeTabButton.classList.add(activeColor, activeTextColor);
+                activeTabButton.classList.remove('border-transparent', 'text-text-muted', 'hover:text-text-light');
+
+                // Pequeno atraso para garantir a transição suave
+                setTimeout(() => {
+                    activeContent.classList.remove('hidden-tab');
+                    activeContent.classList.add('visible-tab');
+                }, 50);
+            }
+        }
+
+        // Adiciona listeners aos botões e define a aba inicial
+        loginTab.addEventListener('click', () => switchTab('login'));
+        registerTab.addEventListener('click', () => switchTab('register'));
+        // Inicializa a aba de Login como ativa
+        switchTab('login');
+
+
+        // Função para mostrar mensagens de status (sucesso ou erro)
+        function showStatus(message, type = 'success') {
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('hidden', 'bg-red-900', 'text-red-300', 'bg-green-900', 'text-green-300');
+
+            if (type === 'error') {
+                statusMessage.classList.add('bg-red-900', 'text-red-300');
+            } else {
+                statusMessage.classList.add('bg-green-900', 'text-green-300');
+            }
+
+            statusMessage.classList.remove('hidden');
+
+            // Oculta a mensagem após 5 segundos
+            setTimeout(() => {
+                statusMessage.classList.add('hidden');
+            }, 5000);
+        }
+
+        // Simulação de Ação de Login
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            // Simulação de validação
+            if (email && password.length >= 6) {
+                showStatus(`Login efetuado com sucesso para: ${email}. Redirecionando para a Página Inicial, aguarde...`, 'success');
+                
+                // --- MUDANÇA IMPLEMENTADA AQUI ---
+                // Redireciona para eventos.html após um pequeno atraso para o usuário ler a mensagem
+                setTimeout(() => {
+                    window.location.href = "eventos.html"; 
+                }, 1500);
+                // ---------------------------------
+
+            } else {
+                showStatus('Erro: Verifique seu e-mail e senha. A senha deve ter no mínimo 6 caracteres.', 'error');
+            }
+        }
+
+        // Simulação de Ação de Cadastro
+        function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+
+            if (password !== confirmPassword) {
+                showStatus('Erro: As senhas digitadas não são iguais.', 'error');
+                return;
+            }
+
+            // Simulação de validação
+            if (name && email && password.length >= 6) {
+                showStatus(`Conta criada com sucesso para ${name}! Você já pode fazer login.`, 'success');
+                // Limpa o formulário e volta para a aba de Login (boa prática)
+                event.target.reset();
+                // Pequeno delay para a mensagem ser lida antes de trocar a aba
+                setTimeout(() => switchTab('login'), 1000); 
+            } else {
+                showStatus('Erro: Preencha todos os campos e certifique-se de que a senha tem no mínimo 6 caracteres.', 'error');
+            }
+        }
+    </script>
+
+</body>
+</html>

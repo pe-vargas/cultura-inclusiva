@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Eventos</title>
+    <style>
+        /* --- ESTILOS GERAIS (Replicados do index.html) --- */
+        :root {
+            --primary-color: #003366; 
+            --secondary-color: #00509e;
+            --text-color: #1a1a1a;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --accent-color: #d32f2f;
+            --price-color: #2e7d32;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 412px;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            padding-bottom: 70px; 
+            position: relative; 
+        }
+
+        /* --- CABEÇALHO --- */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 1.4rem; text-align: center; }
+        p.subtitle { margin: 5px 0 0; text-align: center; font-size: 0.9rem; opacity: 0.9; }
+
+        /* --- NAVEGAÇÃO INFERIOR (BOTTOM BAR) --- */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 412px;
+            height: 60px;
+            background-color: var(--card-bg); 
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0;
+            z-index: 100; 
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #757575; 
+            font-size: 0.7rem;
+            font-weight: 500;
+            padding: 5px 0;
+            flex: 1;
+        }
+
+        .nav-item.active {
+            color: var(--secondary-color); 
+            font-weight: bold;
+        }
+
+        .nav-item .icon {
+            font-size: 1.5rem;
+            margin-bottom: 2px;
+        }
+        
+        /* --- ESTILOS ESPECÍFICOS DO MAPA --- */
+        main {
+            padding: 0;
+            height: calc(100vh - 120px); 
+            position: relative;
+        }
+
+        .map-container {
+            width: 100%;
+            height: 100%;
+            background-color: #3f51b5; 
+            /* IMAGEM DE SATÉLITE ATUALIZADA AQUI */
+            background-image: url('https://media.gettyimages.com/id/979757912/pt/foto/satellite-image-of-downtown-district-san-francisco-california-usa.jpg?s=612x612&w=0&k=20&c=RccTbO9_o0P44H2dj98k9RSYwOE68EyeQoOVcjFvBcE='); 
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .map-container::before {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .map-marker {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            border: 4px solid var(--card-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .map-marker:hover, .map-marker.active {
+            background-color: #ff9800; 
+            transform: scale(1.1);
+            z-index: 50;
+        }
+
+        /* Lista de Cards Flutuante */
+        .location-card-list {
+            position: absolute;
+            bottom: 10px; 
+            left: 0;
+            width: 100%;
+            display: flex;
+            overflow-x: scroll;
+            padding: 0 10px;
+            gap: 15px;
+            z-index: 60;
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
+        }
+        
+        .location-card-list::-webkit-scrollbar {
+            display: none; 
+        }
+
+        .event-card-map {
+            flex: 0 0 85%; 
+            max-width: 350px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            border-left: 5px solid var(--secondary-color);
+            transition: border-color 0.3s;
+        }
+        
+        .event-card-map.active {
+            border-left: 5px solid var(--accent-color);
+        }
+
+        .card-image-map {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .card-info-map {
+            flex-grow: 1;
+        }
+
+        .card-title-map {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+        
+        .card-location-map {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        /* --- TEMA ESCURO (PADRÃO) --- */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        
+        body.dark-mode .app-container {
+            background-color: #121212;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode header {
+            background-color: #001f3f; 
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode .nav-bar {
+            background-color: #1e1e1e;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.5);
+        }
+        
+        body.dark-mode .nav-item {
+            color: #a0a0a0;
+        }
+
+        body.dark-mode .nav-item.active {
+            color: #bbdefb;
+        }
+
+        body.dark-mode .event-card-map {
+            background-color: #1e1e1e; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.8);
+        }
+
+        body.dark-mode .card-title-map {
+            color: #bbdefb; 
+        }
+
+        body.dark-mode .card-location-map {
+            color: #b0b0b0;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+    <div class="app-container">
+        <header>
+            <h1>Mapa de Eventos</h1>
+            <p class="subtitle">Encontre cultura acessível perto de você</p>
+        </header>
+
+        <main>
+            <div class="map-container" id="map-container">
+                </div>
+            
+            <div class="location-card-list" id="location-card-list">
+                </div>
+        </main>
+    </div>
+
+    <nav class="nav-bar">
+        <a href="eventos.html" class="nav-item">
+            <span class="icon">🏠</span>
+            <span class="label">Eventos</span>
+        </a>
+    </nav>
+    <script>
+        // --- DADOS DOS EVENTOS (Coordenadas mantidas para simular diferentes áreas urbanas) ---
+        const events = [
+            {
+                id: 1,
+                title: "O Som do Silêncio",
+                location: "Teatro Municipal - Centro",
+                image: "https://media.istockphoto.com/id/1295114854/pt/foto/empty-red-armchairs-of-a-theater-ready-for-a-show.jpg?s=612x612&w=0&k=20&c=p6Q-qaoaCCWx7K5RlQD8KdbMSDolqr1JqAneiso0J9Q=", 
+                tags: ["libras", "motor"],
+                // Posição: Centro da cidade (Top Center)
+                lat: 30, 
+                lng: 50, 
+            },
+            {
+                id: 2,
+                title: "Exposição: Tocar a Arte",
+                location: "Museu de Arte Moderna",
+                image: "https://www.paranaoeste.com.br/arquivos/noticias/28880/exposicao-toque-de-arte-celebra-talento-de-artistas-locais-no-mac.jpeg", 
+                tags: ["audio", "motor", "libras"],
+                // Posição: Distrito Cultural (Mid-Lower Left)
+                lat: 65,
+                lng: 35,
+            },
+            {
+                id: 3,
+                title: "Cinema: Divertida Mente 2",
+                location: "Cine Plaza - Sala 3",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWyR1Qo3uKWg8wglW2EZDu1Q734yuI509n9g&s", 
+                tags: ["autismo", "motor"],
+                // Posição: Centro Comercial/Shopping (Lower Right)
+                lat: 80,
+                lng: 80,
+            }
+        ];
+
+        const mapContainer = document.getElementById('map-container');
+        const cardListContainer = document.getElementById('location-card-list');
+
+        let activeEventId = null;
+
+        // Função para focar e destacar o evento
+        function focusEvent(id) {
+            // Remove a classe ativa de todos
+            document.querySelectorAll('.map-marker').forEach(marker => marker.classList.remove('active'));
+            document.querySelectorAll('.event-card-map').forEach(card => card.classList.remove('active'));
+
+            // Adiciona a classe ativa ao marcador e card corretos
+            const marker = document.getElementById(`marker-${id}`);
+            const card = document.getElementById(`card-${id}`);
+
+            if (marker) marker.classList.add('active');
+            if (card) {
+                card.classList.add('active');
+                
+                // Rola a lista de cards horizontalmente para centralizar o card ativo
+                const containerWidth = cardListContainer.offsetWidth;
+                const cardOffset = card.offsetLeft;
+                const cardWidth = card.offsetWidth;
+                
+                // Calcula a nova posição de rolagem para centralizar o card (aproximadamente)
+                cardListContainer.scrollLeft = cardOffset - (containerWidth / 2) + (cardWidth / 2);
+            }
+            activeEventId = id;
+        }
+
+        // 1. Renderiza os Marcadores no Mapa
+        function renderMarkers() {
+            events.forEach(event => {
+                const marker = document.createElement('div');
+                marker.id = `marker-${event.id}`;
+                marker.className = 'map-marker';
+                marker.innerText = event.id; // Número simples como marcador
+
+                // Posicionamento absoluto no mapa (usando lat/lng simulados)
+                marker.style.top = `${event.lat}%`;
+                marker.style.left = `${event.lng}%`;
+
+                // Garante que o clique no marcador foque no card
+                marker.onclick = () => focusEvent(event.id);
+                
+                mapContainer.appendChild(marker);
+            });
+        }
+
+        // 2. Renderiza a Lista de Cards Flutuantes
+        function renderCards() {
+            events.forEach(event => {
+                const card = document.createElement('div');
+                card.id = `card-${event.id}`;
+                card.className = 'event-card-map';
+                
+                // URL de link simulado de volta para o index com o evento detalhado
+                const detailLink = `index.html#event-${event.id}`; 
+
+                card.innerHTML = `
+                    <img src="${event.image}" alt="Imagem do Evento" class="card-image-map">
+                    <div class="card-info-map">
+                        <div class="card-title-map">${event.title}</div>
+                        <div class="card-location-map">📍 ${event.location}</div>
+                        <a href="${detailLink}" style="color: var(--secondary-color); font-size: 0.8rem; text-decoration: none; font-weight: 600;">Ver Detalhes</a>
+                    </div>
+                `;
+                
+                // Garante que o clique no card também o destaque no mapa
+                card.onclick = () => focusEvent(event.id);
+                
+                cardListContainer.appendChild(card);
+            });
+        }
+
+
+        // Inicialização
+        renderMarkers();
+        renderCards();
+        
+        // Foca no primeiro evento ao carregar (opcional)
+        if (events.length > 0) {
+            focusEvent(events[0].id);
+        }
+    </script>
+</body>
+</html>
